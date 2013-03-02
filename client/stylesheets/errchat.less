@@ -1,0 +1,74 @@
+.users {
+	position: fixed;
+	width: 200px;
+	height: 100%;
+	padding: 1em;
+	box-sizing: border-box;
+	background: #eee;
+
+	ul {
+		list-style: none;
+		margin: 0;
+		font-weight: bold;
+	}
+
+	.your-username {
+
+		position: absolute;
+		bottom: 0;
+
+		input {
+			width: 130px;
+		}
+	} 
+
+}
+
+.chat-window {
+	margin-left: 200px;
+	float: left;
+
+	.messages {
+		position: absolute;
+		bottom: 3em;
+		padding: 1em;
+		box-sizing: border-box;
+
+		.by {
+			float: left;
+			width: 100px;
+			display: block;
+		}
+
+		.message {
+			margin-left: 100px;
+			display: block;
+		}
+
+		.by:after {
+			content: ":";
+		}
+	}
+
+	.new-message {
+		position: absolute;
+		bottom: 0;
+		left: 200px;
+		right: 1em;
+		margin-left: 1em;
+
+		.message-input {
+			position: relative;
+			margin-left: 100px;
+			width: 70%;
+
+			input {
+				width: 80%;
+			}
+		}
+
+		form {
+			margin: 0;
+		}
+	}
+}

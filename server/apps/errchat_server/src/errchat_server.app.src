@@ -1,0 +1,16 @@
+{application, errchat_server,
+ [
+  {description, "errchat server"},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+  		kernel,
+      stdlib,
+      compiler,
+      syntax_tools,
+      cowboy,  
+      lager
+  ]},
+  {mod, { errchat_server_app, []}},
+  {env, []}
+ ]}.

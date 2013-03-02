@@ -1,0 +1,63 @@
+<!doctype html>
+<html ng-app="chat">
+
+<head>
+    <title>Errchat</title>
+
+    <link rel="stylesheet/less" type="text/css" href="components/bootstrap/less/bootstrap.less">
+    <link rel="stylesheet/less" type="text/css" href="stylesheets/errchat.less">
+
+    <script src="components/less.js/dist/less-1.3.3.js"></script>
+</head>
+
+<body ng-controller="ChatController">
+
+    <section class="users">
+
+        <h5>Hi @{{me.name}}!</h5>
+        <p>Others in this room:</p>
+        <ul ng-repeat="user in users">
+            <li>@{{user.name}}</li>
+        </ul>
+
+        <div class="your-username input-prepend">
+            <span class="add-on">@</span>
+            <input class="username" type="text" placeholder="Username" ng-model="me.name">
+        </div>
+
+    </section>
+
+
+    <section class="chat-window">
+
+        <section class="messages">
+
+            <div ng-repeat="message in messages">
+                <span class="by">@{{message.by.name}}</span>
+                <span class="message">{{message.text}}</span>
+            </div>
+
+        </section>
+
+
+        <section class="new-message">
+            <form ng-submit="addMessage()">
+
+                <div class="message-input input-append">
+                    <input class="message" type="text" ng-model="newMessageText">
+                    <button class="btn" type="button"><i class="icon-pencil"></i></button>
+                </div>
+            </form>
+        </section>
+    </section>
+
+
+
+    <script src="components/jquery/jquery.js"></script>
+    <script src="components/angular/angular.js"></script>
+    <script src="javascripts/websocket.js"></script>
+    <script src="javascripts/chat.js"></script>
+
+</body>
+
+</html>
