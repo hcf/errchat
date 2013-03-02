@@ -5,10 +5,9 @@ Chat using websockets with a erlang backend.
 
 # Client
 
-- uses angular.js
-- uses websocket
-- uses less
-- 
+* uses angular.js
+* uses websocket
+* uses less 
 
 
 sh start_client.sh
@@ -19,7 +18,7 @@ sh start_client.sh
 
 ## erlang
 
-- rebar application
+* rebar application
 
 rebar get-deps
 
