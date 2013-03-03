@@ -9,11 +9,16 @@
 
 %% errchat server api
 
+
+%% State record
+% Currently holds reference to all connections, represented as
+% {user, Pid, Name}.
 -record(state, {connections = []}).
 
 -export([register/1]).
 -export([unregister/1]).
 -export([me/2]).
+-export([users/1]).
 -export([new_message/2]).
 
 %% gen_server
@@ -70,6 +75,11 @@ me(Pid, Message) ->
 
 	gen_server:cast(?SERVER, {me, Pid, Message}).
 
+users(Pid) ->
+	lager:debug("Give me users"),
+
+	gen_server:cast(?SERVER, {users, Pid}).
+
 new_message(Pid, Message) ->
 	lager:debug("new_message"),
 
@@ -91,28 +101,42 @@ handle_call(_Request, _From, State) ->
 handle_cast({register, Pid}, #state{connections = Connections} = State) ->
 	lager:debug("cast register"),
 
-	Connections2 = [{Pid, no_name} | Connections],
+	Connections2 = [{user, Pid, no_name} | Connections],
 	State2 = State#state{connections = Connections2},
 	{noreply, State2};
-
-handle_cast({me, Pid, Message}, #state{connections = Connections} = State) ->
-	lager:debug("cast me"),
-
-	%Connections2 = lists:keyreplace(Pid, 1, Connections, Message),
-	%State2 = State#state{connections = Connections2},
-	{noreply, State};
 
 handle_cast({unregister, Pid}, #state{connections = Connections} = State) ->
 	lager:debug("cast unregister"),
 
-	Connections2 = lists:keydelete(Pid, 1, Connections),
+	Connections2 = lists:keydelete(Pid, 2, Connections),
 	State2 = State#state{connections = Connections2},
 	{noreply, State2};
+
+handle_cast({me, Pid, Message}, #state{connections = Connections} = State) ->
+	lager:debug("cast me, ~p~n", [State]),
+
+	User = {user, Pid, Message},
+
+	Connections2 = lists:keyreplace(Pid, 2, Connections, User),
+	State2 = State#state{connections = Connections2},
+	lager:debug("added name, ~p~n", [State2]),
+	{noreply, State2};
+
+handle_cast({users, Pid}, #state{connections = Connections} = State) ->
+	lager:debug("cast users, ~p~n", [State]),
+
+	Users = [Name || {user, _Pid, Name} <- Connections],
+
+	lager:debug("users: ~p~n", [Users]),
+
+	Pid ! {users, Pid, Users},
+
+	{noreply, State};
 
 handle_cast({new_message, Pid, Message}, #state{connections = Connections} = State) ->
 	lager:debug("cast new_message"),
 
-	[ Cid ! {new_message, Pid, Message} || { Cid, _} <- Connections],
+	[ Cid ! {new_message, Pid, Message} || { user, Cid, _} <- Connections],
 	{noreply, State};
 
 handle_cast(_Data, State) ->

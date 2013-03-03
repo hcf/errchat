@@ -34,6 +34,12 @@ function ChatController($scope, websocket) {
 		});
 	}
 
+	addUsers = function(users) {
+		$scope.$apply(function() {
+			$scope.users.push.apply($scope.users, users);
+		});
+	}
+
 	addMessage = function(message) {
 		$scope.$apply(function() {
 			$scope.messages.push(message);
@@ -44,17 +50,25 @@ function ChatController($scope, websocket) {
 	// Websocket communication
 
 	sendMessage = function(eventName, data) {
-		console.log("Sending message: " +eventName + " data");
-        websocket.send(JSON.stringify({
-          "event": eventName,
-          "data":  data
-        }));
+		console.log("Sending message: " +eventName + " data" + data);
+
+		var msg = {
+			"event": eventName
+		}
+
+		if (data) {
+			msg.data = data;
+		}
+
+        websocket.send(JSON.stringify(msg));
 	};
 
 	websocket.onopen = function() {
       console.log("Connected via websocket");
 
       sendMessage("me", $scope.me);
+
+      sendMessage("users", {"dummy": "value"});
     }
 
 	websocket.onmessage = function (event) {  
@@ -79,6 +93,10 @@ function ChatController($scope, websocket) {
        			by: {name: "_server_"}, 
        			text: json.data.text
        		});
+       	}
+
+       	if (json.event === "users") {
+       		addUsers(json.data);
        	}
 
 

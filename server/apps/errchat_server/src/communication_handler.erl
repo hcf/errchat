@@ -33,6 +33,7 @@ handle(Req, State) ->
   
 %% Terminate connection
 terminate(_Reason, _Req, _State) ->  
+    lager:debug("Terminating connection"),
     errchat_server:unregister(self()),
     ok.  
 
@@ -65,11 +66,17 @@ websocket_handle({text, Msg}, Req, State) ->
     _Event = {<<"event">>, EventName} = lists:keyfind(<<"event">>, 1, JsonList),
     _Data = {<<"data">>, DataJson} = lists:keyfind(<<"data">>, 1, JsonList),
 
+    lager:debug("EventName: ~p, Data: ~p~n", [EventName, DataJson]),
+
     case EventName of
         <<"new_message">> ->
             errchat_server:new_message(self(), DataJson);
         <<"me">> ->
-            errchat_server:me(self(), DataJson)
+            errchat_server:me(self(), DataJson);
+        <<"users">> ->
+            errchat_server:users(self());
+        _ ->
+            lager:debug("Received unknown event")
     end,
 
     {ok, Req, State};
@@ -83,11 +90,26 @@ websocket_info({timeout, _Pid, Msg}, Req, State) ->
     lager:debug("Sending message after timeout: ~p~n~n", [Msg]),  
 
     {reply, {text, Msg}, Req, State};
-websocket_info({new_message, _Pid, Msg}, Req, State) ->
 
-    lager:debug("Sending message to client"),
+websocket_info({users, _Pid, Users}, Req, State) ->
 
-    {reply, {text, Msg, Req, State};
+    lager:debug("Sending users to client: ~p~n", [Users]),
+
+    UsersAsBinary = jiffy:encode(Users),
+
+    Msg = [<<"{\"event\": \"users\", \"data\": ">>, UsersAsBinary, <<"}">>],
+
+    {reply, {text, Msg}, Req, State};
+
+websocket_info({new_message, _Pid, Data}, Req, State) ->
+
+    lager:debug("Sending message to client: ~p~n", [Data]),
+
+    DataAsBinary = jiffy:encode(Data),
+
+    Msg = [<<"{\"event\": \"new_message\", \"data\": ">>, DataAsBinary, <<"}">>],
+
+    {reply, {text, Msg}, Req, State};
 
 % Other messages from the system are handled here.  
 websocket_info(_Info, Req, State) ->  
@@ -97,4 +119,7 @@ websocket_info(_Info, Req, State) ->
     {ok, Req, State}.  
   
 websocket_terminate(_Reason, _Req, _State) ->  
+
+    errchat_server:unregister(self()),
+
     ok. 
