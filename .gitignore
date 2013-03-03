@@ -3,3 +3,4 @@ ebin
 log
 server/deps
 *.dump
+node_modules
