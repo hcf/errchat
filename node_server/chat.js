@@ -4,8 +4,6 @@ var connections = [];
 var WebSocketServer = require('ws').Server;
 var posix = require('posix');
 
-console.log("ulimit -n: " + posix.getrlimit("nofile").hard);
-
 var wss = new WebSocketServer({port: 10100});
 
 console.log("started websocket server, listening on port 10100");
@@ -20,8 +18,6 @@ wss.on('connection', function(ws) {
 
     	var data = json.data;
 
-    	console.log("received event: " +eventName);
-
     	if (eventName === "users") {
     		ws.send('{"event": "users", "data": [{"name": "etz"}]}');
     	}
@@ -33,7 +29,7 @@ wss.on('connection', function(ws) {
     	}
 
     	else if (eventName === "me") {
-
+            
     	}
 
     	else {
@@ -45,5 +41,4 @@ wss.on('connection', function(ws) {
 	connections.push(ws);
 
     ws.send('{"event": "welcome", "data": {"text": "Welcome"}}');
-
 });
