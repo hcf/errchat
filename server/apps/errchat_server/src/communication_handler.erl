@@ -97,7 +97,7 @@ websocket_info({users, _Pid, Users}, Req, State) ->
 
     UsersAsBinary = jiffy:encode(Users),
 
-    Msg = [<<"{\"event\": \"users\", \"data\": ">>, UsersAsBinary, <<"}">>],
+    Msg = [<<"{\"event\": \"users\", \"data\": ">>, UsersAsBinary, <<", \"version\":1}">>],
 
     {reply, {text, Msg}, Req, State};
 
@@ -107,7 +107,7 @@ websocket_info({new_message, _Pid, Data}, Req, State) ->
 
     DataAsBinary = jiffy:encode(Data),
 
-    Msg = [<<"{\"event\": \"new_message\", \"data\": ">>, DataAsBinary, <<"}">>],
+    Msg = [<<"{\"event\": \"new_message\", \"data\": ">>, DataAsBinary, <<", \"version\":1}">>],
 
     {reply, {text, Msg}, Req, State};
 
