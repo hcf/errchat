@@ -11,8 +11,6 @@
 %% ===================================================================
 
 start(_Type, _Args) ->  
-	lager:set_loglevel(lager_console_backend, debug),
-
     errchat_server_sup:start_link().
   
 stop(_State) ->  
