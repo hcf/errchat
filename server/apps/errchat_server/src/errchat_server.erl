@@ -36,6 +36,7 @@ start() ->
 	ok = application:start(compiler),
 	ok = application:start(syntax_tools),
 	ok = application:start(crypto),
+	ok = application:start(jiffy),
 	ok = application:start(ranch),
 	ok = application:start(cowboy),
 	ok = application:start(lager),

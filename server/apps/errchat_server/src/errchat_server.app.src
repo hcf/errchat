@@ -8,7 +8,8 @@
       stdlib,
       compiler,
       syntax_tools,
-      cowboy,  
+      cowboy,
+      jiffy,  
       lager
   ]},
   {mod, { errchat_server_app, []}},
