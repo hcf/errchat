@@ -17,7 +17,7 @@
 %% cowboy_http_handler
 
 %% New connection  
-init({tcp, http}, Req, _Opts) ->  
+init({tcp, http}, _Req, _Opts) ->  
     % "upgrade" every request to websocket,  
     % we're not interested in serving any other content.  
     {upgrade, protocol, cowboy_websocket}.  
@@ -39,7 +39,7 @@ terminate(_Reason, _Req, _State) ->
 %% cowboy_http_websocket_handler
 
 % Called for every new websocket connection.  
-websocket_init(TransportName, Req, []) ->  
+websocket_init(_TransportName, Req, []) ->  
     % register new user in chat server
     errchat_server:register(self()),
 
