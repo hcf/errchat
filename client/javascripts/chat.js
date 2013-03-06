@@ -42,6 +42,9 @@ function ChatController($scope, websocket) {
 
 	addMessage = function(message) {
 		$scope.$apply(function() {
+			if ($scope.messages.length > 100) {
+				$scope.messages.splice(0, 1);
+			}
 			$scope.messages.push(message);
 		});
 	}
