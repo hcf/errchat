@@ -71,9 +71,9 @@ websocket_handle({text, Msg}, Req, State) ->
     case EventName of
         <<"new_message">> ->
             errchat_server:new_message(self(), DataJson);
-        <<"me">> ->
+        <<"me">> -> % NYTT I V2
             errchat_server:me(self(), DataJson);
-        <<"users">> ->
+        <<"users">> ->  % NYTT I V2
             errchat_server:users(self());
         _ ->
             lager:debug("Received unknown event")

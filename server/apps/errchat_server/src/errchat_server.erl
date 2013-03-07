@@ -114,6 +114,7 @@ handle_cast({unregister, Pid}, #state{connections = Connections} = State) ->
 	State2 = State#state{connections = Connections2},
 	{noreply, State2};
 
+ % NYTT I V2
 handle_cast({me, Pid, Message}, #state{connections = Connections} = State) ->
 	lager:debug("cast me, ~p~n", [State]),
 
@@ -124,6 +125,7 @@ handle_cast({me, Pid, Message}, #state{connections = Connections} = State) ->
 	lager:debug("added name, ~p~n", [State2]),
 	{noreply, State2};
 
+ % NYTT I V2
 handle_cast({users, Pid}, #state{connections = Connections} = State) ->
 	lager:debug("cast users, ~p~n", [State]),
 
